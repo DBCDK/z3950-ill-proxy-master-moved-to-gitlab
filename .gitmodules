@@ -1,0 +1,3 @@
+[submodule "docker"]
+        path = docker
+        url = https://git.dbc.dk/z3950-ill-plumbing
