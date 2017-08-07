@@ -6,7 +6,7 @@ pipeline {
             steps {
                 checkout scm
                 sh "mvn verify "
-                junit 'reports/**/*Test.xml'
+                junit 'target/surefire-reports/*.xml'
             }
         }
     }
