@@ -12,9 +12,7 @@ pipeline {
     }
     post {
         always {
-            steps {
-                build job: 'i-actuator', wait: false
-            }
+            build job: 'i-actuator', wait: false
         }
     }
 }
