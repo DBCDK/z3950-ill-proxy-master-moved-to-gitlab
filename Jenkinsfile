@@ -12,6 +12,7 @@ pipeline {
     }
     post {
         always {
+            warnings canComputeNew: false, canResolveRelativePaths: false, categoriesPattern: '', consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''
             build job: 'i-actuator', wait: false
         }
     }
