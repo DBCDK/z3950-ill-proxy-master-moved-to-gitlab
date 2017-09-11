@@ -18,10 +18,13 @@ pipeline {
 
                     dir("src/main/docker/") {
                         sh 'cp  ../../../target/*.war .'
-                        def app = docker.build("$imageName:${imageLabel}".toLowerCase(), '--pull --no-cache .')
+                        //def app = docker.build("$imageName:${imageLabel}".toLowerCase(), '--pull --no-cache .')
+                        // Work around bug https://issues.jenkins-ci.org/browse/JENKINS-44609 , https://issues.jenkins-ci.org/browse/JENKINS-44789
+                        sh "docker build -t $imageName:${imageLabel} ."
                         if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
                             docker.withRegistry('https://docker-i.dbc.dk', 'docker') {
-                                app.push()
+                                app = docker.image("$imageName:${imageLabel}")  // Load image by name:tag bug JENKINS-44609 and JENKINS-44789
+                                //app.push()
                                 app.push("latest")
                             }
                         }
