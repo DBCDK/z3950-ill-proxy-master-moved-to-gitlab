@@ -94,6 +94,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+          <groupId>org.yaz4j</groupId>
+          <artifactId>yaz4j-any</artifactId>
+          <version>1.5</version>
+        </dependency>
     </dependencies>
 
     <build>
