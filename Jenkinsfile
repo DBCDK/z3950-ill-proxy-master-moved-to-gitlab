@@ -24,7 +24,7 @@ pipeline {
                         if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
                             docker.withRegistry('https://docker-i.dbc.dk', 'docker') {
                                 app = docker.image("$imageName:${imageLabel}")  // Load image by name:tag bug JENKINS-44609 and JENKINS-44789
-                                //app.push()
+                                app.push()
                                 app.push("latest")
                             }
                         }
