@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Dansk Bibliotekscenter a/s. Licensed under GNU GPL v3
+  ~ See license text at https://opensource.dbc.dk/licenses/gpl-3.0
+  -->
+
+<configuration debug="true">
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date %level [%thread] %logger{35} [%file:%line] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.perf4j.TimingLogger">
+    <level value="INFO"/>
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger name="dk.dbc">
+    <level value="TRACE"/>
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger name="org.slf4j.LoggerFactory">
+    <level value="TRACE"/>
+    <appender-ref ref="STDOUT"/>
+  </logger>
+</configuration>
+

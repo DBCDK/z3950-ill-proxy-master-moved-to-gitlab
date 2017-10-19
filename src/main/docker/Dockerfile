@@ -22,5 +22,5 @@ COPY --from=yaz4jbuilder /tmp/yaz4j-1.5/./unix/target/libyaz4j.so /usr/lib
 
 WORKDIR /payara-micro
 USER gfish
+ADD z3950-ill-proxy-1.0-SNAPSHOT.war wars/
 CMD ./start-payara-micro.sh
-## Det kunne være oplagt også at putt z3950-*.war i wars
