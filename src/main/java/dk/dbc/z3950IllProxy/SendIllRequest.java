@@ -1,6 +1,6 @@
 package dk.dbc.z3950IllProxy;
 
-public class JsonQuery {
+public class SendIllRequest {
     private String server;
     private String port;
     private String user;
@@ -76,7 +76,7 @@ public class JsonQuery {
 
     @Override
     public String toString() {
-        return "JsonQuery{" +
+        return "SendIllRequest{" +
                 "server='" + server + '\'' +
                 ", port='" + port + '\'' +
                 ", user='" + user + '\'' +
