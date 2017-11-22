@@ -1,5 +1,8 @@
 package dk.dbc.z3950IllProxy;
 
+/**
+ * Class used for unmarshalling an z39.50 search request to {@link Z3950Endpoint#doHoldings(String)} and {@link Z3950Endpoint#doHoldingsWithTimeout(Long, String)}
+ */
 public class Z3950HoldingsRequest {
     private String url;
     private String server;
@@ -120,7 +123,7 @@ public class Z3950HoldingsRequest {
                 ", id='" + id + '\'' +
                 ", user='" + user + '\'' +
                 ", group='" + group + '\'' +
-                ", password='" + password + '\'' +
+                ", password='<na>'" +
                 ", format='" + format + '\'' +
                 ", esn='" + esn + '\'' +
                 ", schema='" + schema + '\'' +

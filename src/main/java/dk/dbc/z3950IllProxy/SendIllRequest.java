@@ -1,5 +1,8 @@
 package dk.dbc.z3950IllProxy;
 
+/**
+ * Class used for unmarshalling a z39.50 ILL order request to {@link Z3950Endpoint#sendIll(String)}
+ */
 public class SendIllRequest {
     private String server;
     private String port;
@@ -81,7 +84,7 @@ public class SendIllRequest {
                 ", port='" + port + '\'' +
                 ", user='" + user + '\'' +
                 ", group='" + group + '\'' +
-                ", password='" + password + '\'' +
+                ", password='<na>'" +
                 ", data='" + data + '\'' +
                 ", timeout='" + timeout + '\'' +
                 ", encoding='" + encoding + '\'' +
