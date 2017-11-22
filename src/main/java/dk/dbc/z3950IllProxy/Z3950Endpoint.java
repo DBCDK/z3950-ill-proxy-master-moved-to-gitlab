@@ -73,15 +73,15 @@ public class Z3950Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response sendIll(String inputData) {
-        LOGGER.entry(inputData);
+        LOGGER.entry("inputData removed");
         StopWatch stopWatch = new Log4JStopWatch("Z3950Endpoint.sendIll");
         try {
             SendIllRequest sendIllRequest = objectMapper.readValue(inputData, SendIllRequest.class);
-            String targetRef = "[target ref missing]";
-            String returnDoc = "[return doc missing]";
+            String targetRef = "\"[target ref missing]\"";
+            String returnDoc = "\"[return doc missing]\"";
 
             if (!validSendIllRequest(sendIllRequest)) {
-                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity("{errorMessage: \"\"}").build();
+                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity("{errorMessage: \"invalid ill request\"}").build();
             }
 
             String targetHost = buildTargetHost(sendIllRequest);
@@ -103,7 +103,6 @@ public class Z3950Endpoint {
                 Package ill = connection.getPackage("itemorder");
                 ill.option("doc", sendIllRequest.getData());
                 ill.send();
-                // TODO: bør man ikke læse targetRef og/eller targetDoc her?
             } catch (Bib1Exception e) {
                 LOGGER.catching(XLogger.Level.ERROR, e);
                 return Response.status(HttpURLConnection.HTTP_BAD_GATEWAY).type(MediaType.APPLICATION_JSON).entity("{errorMessage: " + e.getMessage() + "}").build();
@@ -196,7 +195,7 @@ public class Z3950Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response doHoldings(String inputData) {
-        LOGGER.entry(inputData);
+        LOGGER.entry("inputData removed");
         StopWatch stopWatch = new Log4JStopWatch("Z3950Endpoint.doHoldings");
         try {
             return doHoldingsWithTimeout(60L, inputData);
@@ -220,7 +219,7 @@ public class Z3950Endpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response doHoldingsWithTimeout(@PathParam("timeout") Long timeout, String inputData) {
-        LOGGER.entry(inputData);
+        LOGGER.entry(timeout, "inputData removed");
         StopWatch stopWatch = new Log4JStopWatch("Z3950Endpoint.doHoldingsWithTimeout");
         String res = null;
         List<Z3950HoldingsRequest> z3950HoldingsRequests;
