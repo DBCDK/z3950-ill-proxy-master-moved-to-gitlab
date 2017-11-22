@@ -1,6 +1,9 @@
 package dk.dbc.z3950IllProxy;
 
-public class JsonQuery {
+/**
+ * Class used for unmarshalling a z39.50 ILL order request to {@link Z3950Endpoint#sendIll(String)}
+ */
+public class SendIllRequest {
     private String server;
     private String port;
     private String user;
@@ -76,12 +79,12 @@ public class JsonQuery {
 
     @Override
     public String toString() {
-        return "JsonQuery{" +
+        return "SendIllRequest{" +
                 "server='" + server + '\'' +
                 ", port='" + port + '\'' +
                 ", user='" + user + '\'' +
                 ", group='" + group + '\'' +
-                ", password='" + password + '\'' +
+                ", password='<na>'" +
                 ", data='" + data + '\'' +
                 ", timeout='" + timeout + '\'' +
                 ", encoding='" + encoding + '\'' +

@@ -9,6 +9,9 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * JAX-RS resource registration
+ */
 @ApplicationPath("")
 public class Z3950Application extends Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Z3950Application.class);
