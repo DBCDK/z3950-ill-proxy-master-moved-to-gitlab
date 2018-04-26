@@ -11,7 +11,6 @@ import org.yaz4j.Query;
 import org.yaz4j.ResultSet;
 import org.yaz4j.exception.ZoomException;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -33,24 +32,6 @@ public class Z3950Handler {
 
     private static final XLogger LOGGER = XLoggerFactory.getXLogger(Z3950Handler.class);
     private static final String Z3950_SEARCH_RPN = "@attr 4=103 @attr BIB1 1=12 ";
-    private static final String YAZ_PROXY_PROP = "YAZ-PROXY";
-
-    private String yazProxy = null;
-
-    @PostConstruct
-    public void init() {
-        LOGGER.entry();
-        try {
-            try {
-                yazProxy = System.getenv(YAZ_PROXY_PROP);
-                LOGGER.debug("Settings YAZ proxy to " + yazProxy);
-            } catch (NullPointerException e) {
-                LOGGER.info("No YAZ proxy set");
-            }
-        } finally {
-            LOGGER.exit();
-        }
-    }
 
     /**
      * Method for asynchronously making a holdings lookup over z39.50
@@ -58,11 +39,12 @@ public class Z3950Handler {
      * For example see: {@link Z3950Endpoint#doHoldings(String)}
      *
      * @param z3950HoldingsRequest A json object matching {@link Z3950HoldingsRequest}
+     * @param yazProxy             If set this will be used as proxy
      * @return A json object containing the response
      * @throws ZoomException YAZ4J client exception
      */
     @Asynchronous
-    public Future<String> z3950SearchImpl(Z3950HoldingsRequest z3950HoldingsRequest) throws ZoomException {
+    public Future<String> z3950SearchImpl(Z3950HoldingsRequest z3950HoldingsRequest, String yazProxy) throws ZoomException {
         LOGGER.entry(z3950HoldingsRequest);
         StopWatch stopWatch = new Log4JStopWatch("Z3950Handler.z3950SearchImpl");
         try {

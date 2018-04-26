@@ -13,6 +13,7 @@ import org.yaz4j.Package;
 import org.yaz4j.exception.Bib1Exception;
 import org.yaz4j.exception.ZoomException;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.json.Json;
@@ -37,16 +38,36 @@ import java.util.concurrent.Future;
  * /ill/                    - Post an ILL order via z39.50.<br>
  * /doholdings/             - z39.50 holdings lookup using yaz4j client without timeout given on input, defaults to 60 seconds.<br>
  * /doholdings/{timeout}/   - z39.50 holdings lookup using yaz4j client with timeout given on input.
+ * </p>
+ * Set environment variable YAZ_PROXY (host:port) to enable Z39.50 YAZ proxy, e.g.: some-server:210
  */
 @Stateless
 @Path("")
 public class Z3950Endpoint {
     private static final XLogger LOGGER = XLoggerFactory.getXLogger(Z3950Endpoint.class);
+    private static final String YAZ_PROXY_PROP = "YAZ-PROXY";
 
     private ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private String yazProxy = null;
 
     @EJB
     private Z3950Handler z3950Handler;
+
+
+    @PostConstruct
+    public void init() {
+        LOGGER.entry();
+        try {
+            try {
+                yazProxy = System.getenv(YAZ_PROXY_PROP);
+                LOGGER.debug("Settings YAZ proxy to " + yazProxy);
+            } catch (NullPointerException e) {
+                LOGGER.info("No YAZ proxy set");
+            }
+        } finally {
+            LOGGER.exit();
+        }
+    }
 
     /**
      * Returns application status.
@@ -89,6 +110,9 @@ public class Z3950Endpoint {
 
             try (ConnectionExtended connection = new ConnectionExtended(targetHost, 0)) {
                 connection.option("implementationName", Z3950Handler.IMPEMENTATION_APP);
+                if (yazProxy != null) {
+                    connection.option("proxy", yazProxy);
+                }
                 if (StringUtils.isNotEmpty(sendIllRequest.getUser())
                         && StringUtils.isNotEmpty(sendIllRequest.getGroup())
                         && StringUtils.isNotEmpty(sendIllRequest.getPassword())) {
@@ -239,7 +263,7 @@ public class Z3950Endpoint {
                 if (validZ3950Request(z3950HoldingsRequest)) {
                     key = z3950HoldingsRequest.getResponder() + ":::" + z3950HoldingsRequest.getId();
                     try {
-                        value = z3950Handler.z3950SearchImpl(z3950HoldingsRequest);
+                        value = z3950Handler.z3950SearchImpl(z3950HoldingsRequest, yazProxy);
                         z3950HoldingResponseMap.put(key, value);
                     } catch (ZoomException e) {
                         LOGGER.catching(XLogger.Level.ERROR, e);
