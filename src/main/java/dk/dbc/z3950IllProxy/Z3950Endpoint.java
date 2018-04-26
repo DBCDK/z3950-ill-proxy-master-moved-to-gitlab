@@ -45,7 +45,7 @@ import java.util.concurrent.Future;
 @Path("")
 public class Z3950Endpoint {
     private static final XLogger LOGGER = XLoggerFactory.getXLogger(Z3950Endpoint.class);
-    private static final String YAZ_PROXY_PROP = "YAZ-PROXY";
+    private static final String YAZ_PROXY_PROP = "YAZ_PROXY";
 
     private ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private String yazProxy = null;
