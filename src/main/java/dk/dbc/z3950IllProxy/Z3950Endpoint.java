@@ -228,7 +228,7 @@ public class Z3950Endpoint {
                 throw new IllegalArgumentException("Invalid timeout given, must be > 0 or =< 600");
             }
 
-            JsonObjectBuilder errorResults = Json.createObjectBuilder();
+            JsonObjectBuilder results = Json.createObjectBuilder();
             z3950HoldingsRequests = objectMapper.readValue(inputData, new TypeReference<List<Z3950HoldingsRequest>>() {
             });
             Map<String, Future<String>> z3950HoldingResponseMap = new HashMap<>();
@@ -244,13 +244,13 @@ public class Z3950Endpoint {
                     } catch (ZoomException e) {
                         LOGGER.catching(XLogger.Level.ERROR, e);
                         errorResult = z3950Handler.buildZ3950ErrorResult(e.getMessage());
-                        errorResults.add(key, errorResult);
+                        results.add(key, errorResult);
                     }
                 } else {
                     if (StringUtils.isNotEmpty(z3950HoldingsRequest.getId()) && StringUtils.isNotEmpty(z3950HoldingsRequest.getResponder())) {
                         errorResult = z3950Handler.buildZ3950ErrorResult("Server url missing from request");
                         key = z3950HoldingsRequest.getResponder() + ":::" + z3950HoldingsRequest.getId();
-                        errorResults.add(key, errorResult);
+                        results.add(key, errorResult);
                     } else {
                         LOGGER.warn("Request does not contain enough information for a z39.50 holdings lookup: " + z3950HoldingsRequest);
                     }
@@ -268,7 +268,7 @@ public class Z3950Endpoint {
                     keepRunning = false;
                 }
             }
-            res = z3950Handler.mapZ3950HoldingsResponse(z3950HoldingResponseMap, errorResults);
+            res = z3950Handler.mapZ3950HoldingsResponse(z3950HoldingResponseMap, results);
             return Response.ok().entity(res).type(MediaType.APPLICATION_JSON).build();
         } catch (InterruptedException e) {
             LOGGER.catching(XLogger.Level.ERROR, e);

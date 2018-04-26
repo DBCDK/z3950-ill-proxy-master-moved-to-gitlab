@@ -11,6 +11,7 @@ import org.yaz4j.Query;
 import org.yaz4j.ResultSet;
 import org.yaz4j.exception.ZoomException;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -32,6 +33,24 @@ public class Z3950Handler {
 
     private static final XLogger LOGGER = XLoggerFactory.getXLogger(Z3950Handler.class);
     private static final String Z3950_SEARCH_RPN = "@attr 4=103 @attr BIB1 1=12 ";
+    private static final String YAZ_PROXY_PROP = "YAZ-PROXY";
+
+    private String yazProxy = null;
+
+    @PostConstruct
+    public void init() {
+        LOGGER.entry();
+        try {
+            try {
+                yazProxy = System.getenv(YAZ_PROXY_PROP);
+                LOGGER.debug("Settings YAZ proxy to " + yazProxy);
+            } catch (NullPointerException e) {
+                LOGGER.info("No YAZ proxy set");
+            }
+        } finally {
+            LOGGER.exit();
+        }
+    }
 
     /**
      * Method for asynchronously making a holdings lookup over z39.50
@@ -51,6 +70,10 @@ public class Z3950Handler {
             LOGGER.info("targetHost: " + targetHost);
             try (ConnectionExtended connection = new ConnectionExtended(targetHost, 0)) {
                 connection.option("implementationName", IMPEMENTATION_APP);
+                if (yazProxy != null) {
+                    connection.option("proxy", yazProxy);
+                }
+
                 if (z3950HoldingsRequest.getUser() != null && z3950HoldingsRequest.getGroup() != null && z3950HoldingsRequest.getPassword() != null) {
                     connection.option("user", z3950HoldingsRequest.getUser());
                     connection.option("group", z3950HoldingsRequest.getGroup());
@@ -100,14 +123,13 @@ public class Z3950Handler {
      * Method for mapping id and response from all z39.50 holdings lookup into combined structure.
      *
      * @param z3950HoldingResponseMap Map containing id and response object
-     * @param errorResults            List of error results that must be merged with existing z39.50 results
+     * @param results                 List of error results that must be merged with existing z39.50 results
      * @return JSON object with all z39.50 holdings responses
      */
-    public String mapZ3950HoldingsResponse(Map<String, Future<String>> z3950HoldingResponseMap, JsonObjectBuilder errorResults) {
+    public String mapZ3950HoldingsResponse(Map<String, Future<String>> z3950HoldingResponseMap, JsonObjectBuilder results) {
         LOGGER.entry();
         StopWatch stopWatch = new Log4JStopWatch("Z3950Handler.mapZ3950HoldingsResponse");
         String res = null;
-        JsonObjectBuilder jsonResultObj = errorResults;
         try {
             for (HashMap.Entry<String, Future<String>> entry : z3950HoldingResponseMap.entrySet()) {
                 JsonObjectBuilder z3950Result;
@@ -125,9 +147,9 @@ public class Z3950Handler {
                     entry.getValue().cancel(true);
                     z3950Result = buildZ3950Result("no results found within timeout period", false, "");
                 }
-                jsonResultObj.add(entry.getKey(), z3950Result);
+                results.add(entry.getKey(), z3950Result);
             }
-            JsonObject jsonObject = jsonResultObj.build();
+            JsonObject jsonObject = results.build();
             res = jsonObject.toString();
             return res;
         } finally {
