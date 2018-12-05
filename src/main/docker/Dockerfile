@@ -10,7 +10,7 @@ FROM base as yaz4jbuilder
 RUN apt-install autoconf automake libtool gcc bison tclsh xsltproc docbook docbook-xml docbook-xsl libxslt1-dev libreadline-dev libwrap0-dev pkg-config libicu-dev make git swig g++ ca-certificates ca-certificates-java
 
 WORKDIR /tmp
-RUN echo "hest"
+
 RUN git clone https://github.com/DBCDK/yaz.git
 RUN cd yaz ; git checkout -b compile origin/sb-toKeep-quick-fix && ./buildconf.sh && ./configure --prefix=/usr/local && make install
 
