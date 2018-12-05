@@ -1,0 +1,10 @@
+{
+    "server" : "webservice.statsbiblioteket.dk",
+    "port" : "9054",
+    "user" : "",
+    "group" : "",
+    "password" : "<na>",
+    "data" : "<ill5:ILL-APDU xmlns:ill5=\"http://www.loc.gov/z3950/agency/defns/ill5\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.loc.gov/z3950/agency/defns/ill5 http://www.loc.gov/z3950/agency/defns/illv5.xsd\">\n    <ill5:ILL-Request-1 forward-flag=\"false\" place-on-hold=\"1\" protocol-version-num=\"2\" requester-note=\"Vi tester z3950 i integration-test\">\n    <transaction-id transaction-group-qualifier=\"\" transaction-qualifier=\"1032117340\"/>\n    <service-date-time>\n        <date-time-of-this-service date=\"2018-12-04\" time=\"13:31:52\"/>\n    </service-date-time>\n    <requester-id>\n        <person-or-institution-symbol>\n            <institution-symbol>790900</institution-symbol>\n        </person-or-institution-symbol>\n    </requester-id>\n    <responder-id>\n        <person-or-institution-symbol>\n            <institution-symbol>DK-820010</institution-symbol>\n        </person-or-institution-symbol>\n    </responder-id>\n    <iLL-service-type>1</iLL-service-type>\n    <search-type expiry-date=\"2019-12-29\" expiry-flag=\"1\"/>\n    <item-id author=\"Forenede Danske Motorejere\" author-of-article=\"Wendt Jensen, Anders\" call-number=\"62.72205\" iSSN=\"0047-8199\" pagination=\"48-50\" place-of-publication=\"Kbh.\" publication-date=\"1906\"\n             publication-date-of-component=\"2010\" publisher=\"Motor\" title=\"Motor\" title-of-article=\"En ¤bid af Barcelona\" verification-reference-source=\"dbcdatawell\"\n             volume-issue=\"undefined:Nr. 9 (2010)\">\n        <held-medium-type/>\n        <system-no>34276501</system-no>\n    </item-id>\n</ill5:ILL-Request-1>\n</ill5:ILL-APDU>",
+    "timeout" : "20000",
+    "encoding": "ISO-8859-1"
+}
