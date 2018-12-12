@@ -108,7 +108,7 @@ public class Z3950Endpoint {
             String targetHost = buildTargetHost(sendIllRequest);
             LOGGER.info("targetHost: " + targetHost);
 
-            try (ConnectionExtended connection = new ConnectionExtended(targetHost, 0)) {
+            try (ConnectionExtended connection = new ApduLoggingConnection(targetHost, 0)) {
                 connection.option("implementationName", Z3950Handler.IMPEMENTATION_APP);
                 if (yazProxy != null) {
                     connection.option("proxy", yazProxy);

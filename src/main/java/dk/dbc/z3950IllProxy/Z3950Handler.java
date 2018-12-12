@@ -50,7 +50,7 @@ public class Z3950Handler {
         try {
             String targetHost = buildTargetHost(z3950HoldingsRequest);
             LOGGER.info("targetHost: " + targetHost);
-            try (ConnectionExtended connection = new ConnectionExtended(targetHost, 0)) {
+            try (ConnectionExtended connection = new ApduLoggingConnection(targetHost, 0)) {
                 connection.option("implementationName", IMPEMENTATION_APP);
                 if (yazProxy != null) {
                     connection.option("proxy", yazProxy);
