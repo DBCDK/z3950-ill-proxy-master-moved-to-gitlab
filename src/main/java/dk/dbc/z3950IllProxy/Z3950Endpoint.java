@@ -10,7 +10,6 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.yaz4j.ConnectionExtended;
 import org.yaz4j.Package;
-import org.yaz4j.exception.Bib1Exception;
 import org.yaz4j.exception.ZoomException;
 
 import javax.annotation.PostConstruct;
@@ -127,28 +126,34 @@ public class Z3950Endpoint {
                 Package ill = connection.getPackage("itemorder");
                 ill.option("doc", sendIllRequest.getData());
                 ill.send();
-            } catch (Bib1Exception e) {
-                LOGGER.catching(XLogger.Level.ERROR, e);
-                return Response.status(HttpURLConnection.HTTP_BAD_GATEWAY).type(MediaType.APPLICATION_JSON).entity("{errorMessage: " + e.getMessage() + "}").build();
-            } catch (ZoomException e) {
-                LOGGER.catching(XLogger.Level.ERROR, e);
-                return Response.status(HttpURLConnection.HTTP_BAD_GATEWAY).type(MediaType.APPLICATION_JSON).entity("{errorMessage: " + e.getMessage()
-                        + ", targetRef: " + targetRef
-                        + ", returnDoc: " + returnDoc
-                        + "}").build();
             }
-            return Response.ok().entity("{inputData: " + inputData
-                    + ", targetRef: " + targetRef
-                    + ", returnDoc: " + returnDoc
-                    + "}").type(MediaType.APPLICATION_JSON).build();
-        } catch (IOException e) {
+            return Response.ok().entity( buildJsonResponse(inputData, null, targetRef, returnDoc )).type(MediaType.APPLICATION_JSON).build();
+        } catch (IOException | ZoomException  e) {
             LOGGER.catching(XLogger.Level.ERROR, e);
-            return Response.status(HttpURLConnection.HTTP_BAD_GATEWAY).type(MediaType.APPLICATION_JSON).entity("{errorMessage: " + e.getMessage() + "}").build();
+            return Response.status(HttpURLConnection.HTTP_BAD_GATEWAY).type(MediaType.APPLICATION_JSON).entity(
+                    buildJsonResponse(null, e.getMessage(), null, null)
+            ).build();
         } finally {
             stopWatch.stop();
             LOGGER.exit();
         }
     }
+
+    static private String buildJsonResponse(String inputData, String errorMessage, String targetRef, String returnDoc) {
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        addIfNotNull( builder,"inputData", inputData);
+        addIfNotNull( builder,"errorMessage", errorMessage);
+        addIfNotNull( builder,"targetRef", targetRef);
+        addIfNotNull( builder,"returnDoc", returnDoc);
+
+        return builder.build().toString();
+    }
+
+    static private void addIfNotNull( JsonObjectBuilder builder , String name, String value ) {
+        if( value != null && !value.isEmpty() ) builder.add( name , value );
+    }
+
 
     // Utility method for validating that an z39.50 order contains the bare minimum of information
     private boolean validSendIllRequest(SendIllRequest sendIllRequest) {
