@@ -27,7 +27,7 @@ public class ApduLoggingConnection extends ConnectionExtended {
     private void splitAndLogSavedApdus(String apdus) {
         if( ! LOGGER.isInfoEnabled() ) return ;
 
-        Pattern p = Pattern.compile("\n[a-z]+Request \\{");
+        Pattern p = Pattern.compile("\n[a-zA-Z]+Request \\{");
         Matcher m = p.matcher(apdus);
         int index = 0;
         while( m.find() ) {
