@@ -22,7 +22,7 @@ pipeline {
                         // Work around bug https://issues.jenkins-ci.org/browse/JENKINS-44609 , https://issues.jenkins-ci.org/browse/JENKINS-44789
                         sh "docker build -t $imageName:${imageLabel} --pull --no-cache ."
                         if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
-                            docker.withRegistry('https://docker-i.dbc.dk', 'docker') {
+                            docker.withRegistry('https://docker-fbiscrum.artifacts.dbccloud.dk', 'docker') {
                                 app = docker.image("$imageName:${imageLabel}")  // Load image by name:tag bug JENKINS-44609 and JENKINS-44789
                                 app.push()
                                 app.push("latest")
